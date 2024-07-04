@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <button onclick="window.location.href='https://nictrixx23-2.github.io/games-hub';">Back to Game Hub</button>
     <title>Drawing Canvas</title>
     <style>
         body {
@@ -29,6 +28,7 @@
         }
         canvas {
             border: 1px solid black;
+            margin-top: 20px;
         }
         button {
             margin-top: 20px;
@@ -39,17 +39,26 @@
             border: none;
             cursor: pointer;
         }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 480px; /* Adjust width to match canvas width */
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Drawing Canvas</h1>
-    <div id="colorSelector">
-        <label for="red">R: </label>
-        <input type="range" id="red" name="red" min="0" max="255" value="0">
-        <label for="green">G: </label>
-        <input type="range" id="green" name="green" min="0" max="255" value="0">
-        <label for="blue">B: </label>
-        <input type="range" id="blue" name="blue" min="0" max="255" value="0">
+    <div class="controls">
+        <button id="resetCanvas">Reset Canvas</button>
+        <div id="colorSelector">
+            <label for="red">R: </label>
+            <input type="range" id="red" name="red" min="0" max="255" value="0">
+            <label for="green">G: </label>
+            <input type="range" id="green" name="green" min="0" max="255" value="0">
+            <label for="blue">B: </label>
+            <input type="range" id="blue" name="blue" min="0" max="255" value="0">
+        </div>
     </div>
     <div id="lineWidthSelector">
         <label for="lineWidth">Line Width: </label>
@@ -57,7 +66,6 @@
     </div>
     <div id="colorPreview"></div>
     <canvas id="drawingCanvas" width="480" height="480"></canvas>
-    <button id="resetCanvas">Reset Canvas</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
