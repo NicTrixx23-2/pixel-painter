@@ -16,14 +16,19 @@
         }
         #pixelCanvas {
             display: grid;
-            grid-template-columns: repeat(16, 20px);
+            grid-template-columns: repeat(48, 10px);
             grid-gap: 1px;
         }
         .pixel {
-            width: 20px;
-            height: 20px;
+            width: 10px;
+            height: 10px;
             background-color: white;
             border: 1px solid #ccc;
+        }
+        #colorPreview {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -37,9 +42,61 @@
         <label for="blue">B: </label>
         <input type="range" id="blue" name="blue" min="0" max="255" value="0">
     </div>
-    <div id="colorPreview" style="width: 50px; height: 50px; background-color: rgb(0, 0, 0);"></div>
+    <div id="colorPreview" style="background-color: rgb(0, 0, 0);"></div>
     <div id="pixelCanvas"></div>
 
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const redInput = document.getElementById('red');
+            const greenInput = document.getElementById('green');
+            const blueInput = document.getElementById('blue');
+            const colorPreview = document.getElementById('colorPreview');
+            const pixelCanvas = document.getElementById('pixelCanvas');
+            
+            let currentColor = 'rgb(0, 0, 0)';
+            let isDrawing = false;
+            
+            function updateColor() {
+                const red = redInput.value;
+                const green = greenInput.value;
+                const blue = blueInput.value;
+                currentColor = `rgb(${red}, ${green}, ${blue})`;
+                colorPreview.style.backgroundColor = currentColor;
+            }
+            
+            redInput.addEventListener('input', updateColor);
+            greenInput.addEventListener('input', updateColor);
+            blueInput.addEventListener('input', updateColor);
+        
+            function createPixelCanvas() {
+                for (let i = 0; i < 2304; i++) { // 48 x 48 = 2304
+                    const pixel = document.createElement('div');
+                    pixel.classList.add('pixel');
+                    pixel.addEventListener('mousedown', () => {
+                        isDrawing = true;
+                        pixel.style.backgroundColor = currentColor;
+                    });
+                    pixel.addEventListener('mousemove', () => {
+                        if (isDrawing) {
+                            pixel.style.backgroundColor = currentColor;
+                        }
+                    });
+                    pixel.addEventListener('mouseup', () => {
+                        isDrawing = false;
+                    });
+                    pixel.addEventListener('mouseleave', () => {
+                        isDrawing = false;
+                    });
+                    pixelCanvas.appendChild(pixel);
+                }
+            }
+        
+            createPixelCanvas();
+        
+            document.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+        });
+    </script>
 </body>
 </html>
