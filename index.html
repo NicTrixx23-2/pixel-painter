@@ -10,6 +10,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow: hidden; /* Disable scrolling */
+            margin: 0; /* Remove default margin */
+            height: 100vh; /* Ensure body takes full height of viewport */
         }
         #colorSelector {
             margin-bottom: 20px;
@@ -86,6 +89,31 @@
             canvas.addEventListener('mousedown', startDrawing);
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseleave', stopDrawing);
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    isDrawing = true;
+                    ctx.beginPath();
+                    ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+                }
+            }, { passive: false });
+            canvas.addEventListener('touchmove', (e) => {
+                if (isDrawing) {
+                    if (e.touches.length === 1) {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        ctx.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+                    }
+                }
+            }, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+            document.addEventListener('mouseup', stopDrawing);
         });
     </script>
 </body>
