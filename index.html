@@ -21,6 +21,7 @@
             width: 50px;
             height: 50px;
             margin-bottom: 20px;
+            background-color: rgb(0, 0, 0); /* Initial color preview */
         }
         canvas {
             border: 1px solid black;
@@ -37,7 +38,7 @@
         <label for="blue">B: </label>
         <input type="range" id="blue" name="blue" min="0" max="255" value="0">
     </div>
-    <div id="colorPreview" style="background-color: rgb(0, 0, 0);"></div>
+    <div id="colorPreview"></div>
     <canvas id="drawingCanvas" width="480" height="480"></canvas>
 
     <script>
