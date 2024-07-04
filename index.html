@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Painter</title>
+    <title>Drawing Canvas</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,26 +14,18 @@
         #colorSelector {
             margin-bottom: 20px;
         }
-        #pixelCanvas {
-            display: grid;
-            grid-template-columns: repeat(48, 10px);
-            grid-gap: 1px;
-        }
-        .pixel {
-            width: 10px;
-            height: 10px;
-            background-color: white;
-            border: 1px solid #ccc;
-        }
         #colorPreview {
             width: 50px;
             height: 50px;
             margin-bottom: 20px;
         }
+        canvas {
+            border: 1px solid black;
+        }
     </style>
 </head>
 <body>
-    <h1>Pixel Painter</h1>
+    <h1>Drawing Canvas</h1>
     <div id="colorSelector">
         <label for="red">R: </label>
         <input type="range" id="red" name="red" min="0" max="255" value="0">
@@ -43,7 +35,7 @@
         <input type="range" id="blue" name="blue" min="0" max="255" value="0">
     </div>
     <div id="colorPreview" style="background-color: rgb(0, 0, 0);"></div>
-    <div id="pixelCanvas"></div>
+    <canvas id="drawingCanvas" width="480" height="480"></canvas>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -51,11 +43,12 @@
             const greenInput = document.getElementById('green');
             const blueInput = document.getElementById('blue');
             const colorPreview = document.getElementById('colorPreview');
-            const pixelCanvas = document.getElementById('pixelCanvas');
+            const canvas = document.getElementById('drawingCanvas');
+            const ctx = canvas.getContext('2d');
             
             let currentColor = 'rgb(0, 0, 0)';
             let isDrawing = false;
-            
+
             function updateColor() {
                 const red = redInput.value;
                 const green = greenInput.value;
@@ -67,35 +60,32 @@
             redInput.addEventListener('input', updateColor);
             greenInput.addEventListener('input', updateColor);
             blueInput.addEventListener('input', updateColor);
-        
-            function createPixelCanvas() {
-                for (let i = 0; i < 2304; i++) { // 48 x 48 = 2304
-                    const pixel = document.createElement('div');
-                    pixel.classList.add('pixel');
-                    pixel.addEventListener('mousedown', () => {
-                        isDrawing = true;
-                        pixel.style.backgroundColor = currentColor;
-                    });
-                    pixel.addEventListener('mousemove', () => {
-                        if (isDrawing) {
-                            pixel.style.backgroundColor = currentColor;
-                        }
-                    });
-                    pixel.addEventListener('mouseup', () => {
-                        isDrawing = false;
-                    });
-                    pixel.addEventListener('mouseleave', () => {
-                        isDrawing = false;
-                    });
-                    pixelCanvas.appendChild(pixel);
-                }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                draw(e);
             }
-        
-            createPixelCanvas();
-        
-            document.addEventListener('mouseup', () => {
+
+            function stopDrawing() {
                 isDrawing = false;
-            });
+                ctx.beginPath();
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = currentColor;
+
+                ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mousemove', draw);
         });
     </script>
 </body>
